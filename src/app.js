@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const contactRoutes = require('./routes/contactRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json({ limit: '16kb' }));
 
 // --- Routes ---
 app.use('/api', contactRoutes);
+app.use('/api', applicationRoutes);
 
 // --- Health check ---
 app.get('/health', (_req, res) => {

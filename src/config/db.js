@@ -27,7 +27,21 @@ async function initDb() {
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
-    console.log('Database initialized — contacts table ready');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS applications (
+        id SERIAL PRIMARY KEY,
+        full_name VARCHAR(255) NOT NULL,
+        college VARCHAR(255),
+        course VARCHAR(255),
+        mobile VARCHAR(50) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        domain VARCHAR(255) NOT NULL,
+        duration VARCHAR(50) NOT NULL,
+        message TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+    console.log('Database initialized — contacts + applications tables ready');
   } finally {
     client.release();
   }

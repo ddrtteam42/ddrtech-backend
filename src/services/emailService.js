@@ -25,4 +25,33 @@ async function sendContactEmail(contact) {
   });
 }
 
-module.exports = { sendContactEmail };
+async function sendApplicationEmail(app) {
+  await resend.emails.send({
+    from: "Digital Drive Tech <onboarding@resend.dev>",
+    to: process.env.COMPANY_EMAIL,
+    subject: "New Internship Application",
+    html: `
+      <h2>New Internship Application</h2>
+
+      <p><strong>Full Name:</strong> ${app.fullName}</p>
+
+      <p><strong>Email:</strong> ${app.email}</p>
+
+      <p><strong>Mobile:</strong> ${app.mobile}</p>
+
+      <p><strong>College:</strong> ${app.college || 'N/A'}</p>
+
+      <p><strong>Course:</strong> ${app.course || 'N/A'}</p>
+
+      <p><strong>Domain:</strong> ${app.domain}</p>
+
+      <p><strong>Duration:</strong> ${app.duration}</p>
+
+      <p><strong>Message:</strong></p>
+
+      <p>${app.message || 'N/A'}</p>
+    `,
+  });
+}
+
+module.exports = { sendContactEmail, sendApplicationEmail };
