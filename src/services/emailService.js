@@ -1,34 +1,28 @@
-const transporter = require('../config/mail');
+const { Resend } = require("resend");
 
-/**
- * Send a contact-form notification to the company.
- * Logs but does NOT throw on failure — DB save already succeeded.
- */
-async function sendContactNotification({ name, email, phone, subject, message }) {
-  const companyEmail = process.env.COMPANY_EMAIL;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const mailOptions = {
-    from: `"${name}" <${process.env.SMTP_USER}>`,
-    replyTo: email,
-    to: companyEmail,
-    subject: 'New Contact Form Submission',
-    text: `
-Name: ${name}
-Email: ${email}
-Phone: ${phone || 'N/A'}
-Subject: ${subject || 'N/A'}
-Message:
-${message}
-    `.trim(),
-  };
+async function sendContactEmail(contact) {
+  await resend.emails.send({
+    from: "Digital Drive Tech <admin@digitaldrivetech.com>", // Later change to admin@digitaldrivetech.com
+    to: process.env.COMPANY_EMAIL,
+    subject: "New Contact Form Submission",
+    html: `
+      <h2>New Contact Form Submission</h2>
 
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.messageId);
-  } catch (err) {
-    // Log the error but do NOT rethrow — we already saved the contact to DB.
-    console.error('Failed to send email notification:', err.message);
-  }
+      <p><strong>Name:</strong> ${contact.name}</p>
+
+      <p><strong>Email:</strong> ${contact.email}</p>
+
+      <p><strong>Phone:</strong> ${contact.phone}</p>
+
+      <p><strong>Subject:</strong> ${contact.subject}</p>
+
+      <p><strong>Message:</strong></p>
+
+      <p>${contact.message}</p>
+    `,
+  });
 }
 
-module.exports = { sendContactNotification };
+module.exports = { sendContactEmail };
