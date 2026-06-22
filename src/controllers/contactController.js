@@ -1,5 +1,5 @@
 const { pool } = require('../config/db');
-const { sendContactNotification } = require('../services/emailService');
+const { sendContactEmail } = require('../services/emailService');
 
 /**
  * POST /api/contact
@@ -36,7 +36,7 @@ async function submitContact(req, res) {
     const saved = result.rows[0];
 
     // --- Send email (non-blocking — won't fail the request) ---
-    sendContactNotification({ name, email, phone, subject, message });
+    await sendContactEmail({ name, email, phone, subject, message });
 
     return res.status(200).json({
       success: true,
